@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  flask-app:
+    build:
+      context: ./new-papertrading
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    networks:
+      - app-network
+    environment:
+      - FLASK_APP=main.py
+    env_file:
+      - ./new-papertrading/.env
+
+  fastapi-app:
+    build:
+      context: ./papertrading
+      dockerfile: Dockerfile
+    ports:
+      - "5555:5555"
+    networks:
+      - app-network
+    environment:
+      - FASTAPI_APP=main.py
+    env_file:
+      - ./papertrading/.env
+
+networks:
+  app-network:
+    driver: bridge

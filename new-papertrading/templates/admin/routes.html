@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Flask Routes Information
+{% endblock %}
+
+{% block styles %}
+ {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="container mb-50">
+    <h1>Application Routing Table</h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>URL Rule</th>
+                <th>Methods</th>
+                <th>Documentation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rule, methods, doc in routes %}
+            <tr>
+                <td>{{ rule }}</td>
+                <td>{{ methods }}</td>
+                <td>{{ doc }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
