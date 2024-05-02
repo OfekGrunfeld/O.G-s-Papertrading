@@ -16,9 +16,25 @@ Welcome to PaperTrading, a comprehensive and interactive simulation platform des
 
 Before you begin, ensure you have the following installed:
 - Any modern web browser
+- Docker
 
 ### Installation
-- Generate a certificate from openssl:
+- Generate a certificate from openssl or use either Let's Encrypt or Certify The Web. <br>
+In order to generate a certificate from openssl, you can download openssl and enter this:
+```shell
 openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
+````
+- Put your env variables
+- Create docker containers: 
+```dockerfile
+docker-compose -p ogs-papertrading  up -d --build
+```
 
-or use Let's Encrypt and Certify The Web
+
+If you want to run the servers with python instead of docker containers remove the add_middleware comment on /papertrading/main.py/run_app
+<br>
+and change the .env allowed network to be localnetowrk (either 0.0.0.0 or 127.0.0.1)
+<br>
+also run the uvicorn server on 127.0.0.1 instead of 0.0.0.0
+<br>
+thats it

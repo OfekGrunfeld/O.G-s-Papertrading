@@ -17,15 +17,20 @@ services:
     build:
       context: ./papertrading
       dockerfile: Dockerfile
-    ports:
-      - "5555:5555"
     networks:
       - app-network
     environment:
       - FASTAPI_APP=main.py
     env_file:
       - ./papertrading/.env
+    volumes:
+      - ./papertrading/https/cert.pem:/etc/ssl/certs/cert.pem
+      - ./papertrading/https/key.pem:/etc/ssl/certs/key.pem
 
 networks:
   app-network:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.28.0.0/16"

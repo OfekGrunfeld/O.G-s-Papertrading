@@ -8,7 +8,7 @@ from routes import fastapi_router, admin_router
 from utils.middlewares import VerifyClientIPMiddleware
 
 def run_app(app: FastAPI) -> None:
-    app.add_middleware(VerifyClientIPMiddleware)
+    # app.add_middleware(VerifyClientIPMiddleware)
     uvicorn.run(
         app,
         host=HOST_IP,
