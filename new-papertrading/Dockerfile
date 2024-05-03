@@ -4,6 +4,9 @@ WORKDIR /app
 
 COPY . /app
 
+# Copy requirements to keep in cache
+COPY ./requirements.txt /app/requirements.txt
+
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
 

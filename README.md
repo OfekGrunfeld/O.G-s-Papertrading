@@ -27,7 +27,7 @@ openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 36
 - Put your env variables
 - Create docker containers: 
 ```dockerfile
-docker-compose -p ogs-papertrading  up -d --build
+docker-compose -p ogs-papertrading  up -d --build 
 ```
 
 

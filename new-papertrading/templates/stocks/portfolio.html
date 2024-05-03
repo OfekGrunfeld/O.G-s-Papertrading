@@ -30,10 +30,10 @@
     </div>
 
     <!-- Portfolio Details -->
-    <h2 class="display-6">Current Balance: ${{ "{:,.2f}".format(balance) }}</h2>
+    <h2 class="display-6">Current Liquid Balance: ${{ "{:,.2f}".format(balance) }}</h2>
     <br>
     {% if symbols|length > 0 %} 
-    <h3 class="display-6"> Current portfolio worth: ${{ total_worths|format_total_worths }}</h3>
+    <h3 class="display-6"> Current Portfolio Worth: ${{ total_worths|format_total_worths }}</h3>
     <!-- Graphs in a Card -->
     <div class="card my-3">
         <div class="card-header bg-3">
