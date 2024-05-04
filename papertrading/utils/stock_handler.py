@@ -132,7 +132,6 @@ class StockHandler:
         session.commit() 
         session.close()
             
-    
     @staticmethod
     def sell_shares(uuid: str, symbol: str, shares: np.double) -> np.double:
         """

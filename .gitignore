@@ -152,3 +152,4 @@ testing/*
 */*.pem
 **/*.pyc
 */*.env
+/new_papertrading/README.md

@@ -5,7 +5,7 @@ import json
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
-from utils.env_variables import SECRET_KEY
+from utils.env_variables import ENCRYPTION_KEY
 
 
 from utils.logger_script import logger
@@ -47,7 +47,7 @@ def decrypt(stored_encrypted_data: str) -> Union[dict, str]:
     encrypted_data = b64decode(encrypted_data.encode())
     binary_data_length = int(binary_data_length)
     cipher = Cipher(
-        algorithms.AES(b64decode(SECRET_KEY)), 
+        algorithms.AES(b64decode(ENCRYPTION_KEY)), 
         modes.CBC(iv), 
         backend=backend
     )

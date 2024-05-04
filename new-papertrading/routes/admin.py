@@ -31,4 +31,4 @@ def routes_info():
                 flask_app.logger.error("Error processing rule: %s" % rule.rule, exc_info=True)
                 routes.append((rule.rule, 'ERROR', 'Invalid route definition!'))
 
-    return render_template('misc/routes.html', routes=routes)
+    return render_template('admin/routes.html', routes=routes)

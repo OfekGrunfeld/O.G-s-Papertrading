@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from utils.env_variables import HOST_IP, HOST_PORT 
+from utils.env_variables import FASTAPI_PORT 
 from data.database import initialise_all_databases
 
 from routes import fastapi_router, admin_router
@@ -11,8 +11,8 @@ def run_app(app: FastAPI) -> None:
     # app.add_middleware(VerifyClientIPMiddleware)
     uvicorn.run(
         app,
-        host=HOST_IP,
-        port=int(HOST_PORT),
+        host="127.0.0.1",
+        port=int(FASTAPI_PORT),
         ssl_keyfile="./https/key.pem", 
         ssl_certfile="./https/cert.pem",
     )

@@ -20,7 +20,11 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/defaults.css') }}">
   {% endblock %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/defaults.css') }}">
-  <title>{% block title %}{{ config['APP_NAME'] }}{% endblock %}</title>
+  <title>
+  {% block title %}
+    {{ config.APP+_NAME }}
+  {% endblock %}
+  </title>
 </head>
 
 <body>
