@@ -110,7 +110,7 @@ def sign_in(username: str, password: str, db: Session = Depends(get_db_userbase)
         logger.debug(f"sending back data: {return_dict.to_dict()}")
         return return_dict.to_dict()
 
-# Unused 
+# Fully Done
 @fastapi_router.get("/get_user/database/{database_name}")
 def get_user_database_table(database_name: str, uuid: str):
     try:
@@ -150,10 +150,19 @@ def get_user_summary(uuid: str):
         logger.debug(f"Received user portfolio request for user: {uuid}")
 
         results: dict = {}
-        results["balance"] = np.floor(get_user_from_userbase(identifier=UserIdentifiers.uuid.value, value=uuid).balance * 100) / 100
+
+        # Get user balance
+        try:
+            results["balance"] = np.floor(get_user_from_userbase(identifier=UserIdentifiers.uuid.value, value=uuid).balance * 100) / 100
+        except Exception as error:
+            logger.warning(f"Failed to output user {uuid}'s balance")
+            results["balance"] = 0
         # Get portfolio summary
-        results["symbols"] = compile_user_portfolio(DatabasesNames.portfolios.value, uuid)
-        # Add current balance
+        try:
+            results["symbols"] = compile_user_portfolio(DatabasesNames.portfolios.value, uuid)
+        except Exception as error:
+            logger.warning(f"Failed to output user {uuid}'s portfolio")
+            results["symbols"] = {}
         
         return_dict.data = results
         return_dict.success = True
@@ -223,7 +232,7 @@ def update_user(attribute_to_update: str, uuid: str, password: str, new_attribut
     finally:
         return return_dict
 
-@fastapi_router.delete("/delete/user")
+@fastapi_router.delete("/delete_user")
 def delete_user(uuid: str, password: str):
     try:
         return_dict = ServerResponse()

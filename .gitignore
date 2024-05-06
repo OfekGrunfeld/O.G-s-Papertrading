@@ -153,3 +153,4 @@ testing/*
 **/*.pyc
 */*.env
 /new_papertrading/README.md
+*/*DockerFile

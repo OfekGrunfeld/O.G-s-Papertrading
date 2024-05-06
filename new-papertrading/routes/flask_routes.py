@@ -230,6 +230,7 @@ def portfolio(symbol: str = None):
     return redirect(url_for('index'))
 
 @flask_app.route('/my/database/<database_name>', methods=["GET"])
+@sign_in_required()
 def view_database(database_name: str):
     """
     Provides a view of a specified database (either 'transactions' or 'portfolios' 
@@ -380,7 +381,11 @@ def sign_up():
         response = get_response(
             endpoint=FastAPIRoutes.sign_up.value, 
             method="post", 
-            data_to_send={"email": sign_up_form.email.data, "username": sign_up_form.username.data, "password": sign_up_form.password.data}
+            data_to_send={
+                "email": sign_up_form.email.data, 
+                "username": sign_up_form.username.data, 
+                "password": sign_up_form.password.data
+            }
         )
         try:
             if response["success"] == True:
@@ -439,7 +444,7 @@ def update_user():
             logger.warning(f"Password does not match session")
             feedback = UserFeedbacks.password_not_match.value
         else:
-            attribute_to_update = update_form.attribute_to_update.data
+            attribute_to_update = update_form.attribute_to_update.data.lower()
             attribute_value = update_form.data[f"new_{attribute_to_update}"]
 
             # Communicate with fastAPI server to update the user
