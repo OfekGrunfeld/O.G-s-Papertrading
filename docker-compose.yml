@@ -1,6 +1,6 @@
-version: '3.8'
 services:
   flask-app:
+    image: o.g-s-papertrading-flask-app:0.0.1
     build:
       context: ./new-papertrading
       dockerfile: Dockerfile
@@ -14,6 +14,7 @@ services:
       - ./new-papertrading/.env
 
   fastapi-app:
+    image: o.g-s-papertrading-fastapi-app:0.0.1
     build:
       context: ./papertrading
       dockerfile: Dockerfile
@@ -26,6 +27,17 @@ services:
     volumes:
       - ./papertrading/https/cert.pem:/etc/ssl/certs/cert.pem
       - ./papertrading/https/key.pem:/etc/ssl/certs/key.pem
+  
+  ngrok:
+    image: ngrok/ngrok
+    environment:
+      - NGROK_AUTHTOKEN=1sX5zhXfKhXoGi2YiiWnfzLRopc_6JrnHCRyhGVabFbTGwDMt 
+    command: http flask-app:8888
+    ports:
+      - "4040:4040"
+    networks:
+      - app-network
+    container_name: o.g-s-papertrading-ngrok-tunneler
 
 networks:
   app-network:
