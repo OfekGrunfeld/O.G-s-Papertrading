@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+  {{ super() }}
+  {% if session.username is not defined %}
+  <style>
+    .tv-column {
+      width: 100%;
+    }
+  </style>
+  {% endif %}
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/tradeForm.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-stretch flex-wrap gap-2 px-2 pb-2">
+  <!-- Root Left Flex -->
+  <div class="card flex-fill bg-light shadow">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>Stock Market Dashboard</h3>
+        <div class="d-flex justify-content-between align-items-center gap-2">
+          <form method="POST" id="toggleGraphTheme" class="align-self-center">
+            <div class="page-header">
+              {{ wtf.quick_form(switch_graph_theme_form) }}
+            </div>
+          </form>
+          <h5 class="align-self-end">Dark Mode</h5>
+        </div>
+      </div>
+      {% include "stocks/stock_chart.html" %}
+    </div>
+  </div>
+  <!-- Root Right Flex -->
+  <div class="d-flex justify-content-start align-items-stretch flex-row flex-wrap gap-2"> 
+  {% if session.username %}
+    <!-- Trade Form BEGIN -->
+    <div class="card bg-light shadow mb-4">
+      <div class="card-body">
+        <!-- Symbol Selection BEGIN -->
+        <div class="d-flex justify-content-between flex-wrap gap-2 mb-3 ">
+          <h3 class="align-self-center">{{ symbol }}</h3>
+          <!-- Symbol Selection Form BEGIN -->
+          <a class="btn btn-primary align-self-center" data-bs-toggle="collapse" href="#symbolFormContainer" role="button" 
+            aria-expanded="false" aria-controls="symbolFormContainer"> 
+            Change <br> Symbol
+          </a>
+          <div class="collapse" id="symbolFormContainer">
+            <div class="d-flex flex-column align-items-start">
+              <div>
+                <form method="POST" id="symbolForm">
+                  {{ symbol_form.hidden_tag() }}
+                  <div class="symbolForm-input-group">
+                    {{ symbol_form.symbol(class='form-control', placeholder='AAPL, NVDA...') }}
+                  </div>
+                </form>
+              </div>
+              <div class="w-auto"><button type="submit" class="btn btn-primary">Submit</button></div>
+            </div>
+          </div>
+          <!-- Symbol Selection Form END -->
+        </div>
+        <!-- Symbol Selection END -->
+        <!-- Order Form START -->
+        <form method="POST">
+          {{ trade_form.hidden_tag() }}
+          {% if bid and ask %}
+          <div class="mb-3 text-center">
+            <div class="row">
+              <div class="col">
+                <div class="bg-success text-white mx-1 p-2 rounded">
+                  Bid<br>{{ bid }}
+                </div>
+              </div>
+              <div class="col">
+                <div class="bg-info text-white mx-2 p-2 rounded">
+                  Spread<br>{{ "%.2f"|format(ask - bid) }}
+                </div>
+              </div>
+              <div class="col">
+                <div class="bg-danger text-white mx-1 p-2 rounded">
+                  Ask<br>{{ ask }}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          <div class="form-group mb-2">
+            {{ wtf.form_field(trade_form.side, class="form-select") }}
+          </div>
+          <div class="form-group mb-2">
+            {{ wtf.form_field(trade_form.order_type, class="form-select") }}
+          </div>
+          <div class="form-group mb-2">
+            {{ wtf.form_field(trade_form.shares, class="form-control") }}
+          </div>
+          <div class="form-group mb-2 limit-price-field hidden">
+            {{ wtf.form_field(trade_form.limit_price) }}
+          </div>
+          <div class="form-group mb-2 stop-price-field hidden">
+            {{ wtf.form_field(trade_form.stop_price) }}
+          </div>
+          <div class="form-group mb-2">
+            <div class="form-check">
+              {{ wtf.form_field(trade_form.stop_loss_check, class="form-check-input") }}
+            </div>
+            <div class="form-check">
+              {{ wtf.form_field(trade_form.take_profit_check, class="form-check-input") }}
+            </div>
+          </div>
+          {% if trade_feedback %}
+            <div class="alert alert-danger">
+              {{ trade_feedback}}
+            </div>
+          {% endif %}
+          <div class="d-flex justify-content-center"><button type="submit" class="btn btn-primary" id="trade_form_submit">Trade</button></div>
+          
+        </form>
+        <!-- Order Form END -->
+      </div>
+    </div> 
+    <!-- Trade Form END-->  
+  {% endif %}
+    <!-- Analysis BEGIN -->
+    <div class="d-flex align-items-stretch flex-column"> 
+      <div class="card bg-light shadow mb-2" style="min-width: 300px; min-height: 350px;">
+        <div class="card-body">
+          {% include "stocks/analysis.html" %}
+        </div>
+      </div>
+      <div class="card bg-light shadow mb-4" style="min-width: 300px; min-height: 350px;">
+        <div class="card-body">
+          {% include "stocks/stock_data.html" %}
+        </div>
+      </div>
+      <!-- Analysis END -->
+    </div>
+  </div>
+</div>
+
+{% endblock %}

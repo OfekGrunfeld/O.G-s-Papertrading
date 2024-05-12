@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+{% include "stocks/ticker_tape.html" %}
+<div class="container pb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo"style="max-height: 500px;">
+        </div>
+        <h2 class="mb-4 text-center">Welcome to O.G's Papertrading</h2>
+        <p class="lead text-center">This is the homepage of my project. Feel free to explore!</p>
+        {% if session.username is not defined %}
+        <h2 class="mb-4 text-center"><a href="{{ url_for('sign_up') }}" class="link-underscore-succcess">Sign up here</a></h2>
+        {% endif %}
+        <div class="text-center mt-4">
+            <a href="{{ url_for('readme') }}" class="btn btn-primary btn-lg">View README</a>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {{ super() }} 
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}

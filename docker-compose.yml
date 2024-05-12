@@ -2,7 +2,7 @@ services:
   flask-app:
     image: o.g-s-papertrading-flask-app:0.0.1
     build:
-      context: ./new-papertrading
+      context: ./flask-app
       dockerfile: Dockerfile
     ports:
       - "8888:8888"
@@ -11,27 +11,27 @@ services:
     environment:
       - FLASK_APP=main.py
     env_file:
-      - ./new-papertrading/.env
+      - ./flask-app/.env
 
   fastapi-app:
     image: o.g-s-papertrading-fastapi-app:0.0.1
     build:
-      context: ./papertrading
+      context: ./fastapi-app
       dockerfile: Dockerfile
     networks:
       - app-network
     environment:
       - FASTAPI_APP=main.py
     env_file:
-      - ./papertrading/.env
+      - ./fastapi-app/.env
     volumes:
-      - ./papertrading/https/cert.pem:/etc/ssl/certs/cert.pem
-      - ./papertrading/https/key.pem:/etc/ssl/certs/key.pem
+      - ./fastapi-app/https/cert.pem:/etc/ssl/certs/cert.pem
+      - ./fastapi-app/https/key.pem:/etc/ssl/certs/key.pem
   
   ngrok:
     image: ngrok/ngrok
-    environment:
-      - NGROK_AUTHTOKEN=1sX5zhXfKhXoGi2YiiWnfzLRopc_6JrnHCRyhGVabFbTGwDMt 
+    env_file:
+      .env
     command: http flask-app:8888
     ports:
       - "4040:4040"

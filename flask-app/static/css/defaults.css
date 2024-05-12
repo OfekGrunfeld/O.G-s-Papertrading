@@ -1,0 +1,55 @@
+body {
+    padding-top: 90px;
+}
+:root {
+    --color-1: #386C5F;
+    --color-2: #EEE0CB;
+    --color-3: #83B692;
+    --color-4: #436436;
+}
+
+.bg-1 {
+    background-color: var(--color-1);
+}
+
+.bg-2 {
+    background-color: var(--color-2);
+}
+
+.bg-3 {
+    background-color: var(--color-3);
+    color: var(--color-2)
+}
+.bg-4 {
+    background-color: var(--color-4);
+}
+
+.btn-primary, .btn-default {
+    color:white;
+    background-color: var(--color-4);
+}
+.btn-default:hover {
+    color:white;
+    background-color: var(--color-1);
+}
+
+.logo > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+.logo > img:hover {
+    animation: pulse 800ms ease-in-out;
+}
+.logo {
+    overflow: hidden;
+}
+@keyframes pulse {
+    from, to {
+        scale: 1;
+    }
+    50% {
+        scale: 1.08;
+    }
+}
+

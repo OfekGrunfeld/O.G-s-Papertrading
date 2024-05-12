@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ super() }} | Symbol Overview
+{% endblock %}
+
+{% block content %}
+
+<!-- Symbol Details -->
+<div class="vh-100 vw-100">
+    <div class="container">
+        <div class="bg-3 py-2 px-3 mb-2 rounded">
+            <div class="d-flex justify-content-center align-items-center gap-4 w-auto">
+                <h2 class="mb-0">{{ symbol }} Summary</h2>
+                <a href="/my/portfolio" class="btn btn-primary symbol-button">Back to Portfolio</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="d-flex mb-2 px-3 vw-100">
+        <!-- Symbol Chart -->
+        <div class="card bg-light shadow flex-fill">
+            <div class="card-body mb-3" style="min-height:500px">
+                {% include "stocks/stock_chart_single.html" %}
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center mb-2 px-3">
+        <div class="table-responsive w-80 mt-2">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Shares</th>
+                        <th>Share Price</th>
+                        <th>Total Cost</th>
+                        <th>Profit Per Share Since Bought</th>
+                        <th>Total Profit Since Bought</th>
+                        <th>Profit Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.timestamp|format_iso_datetime }}</td>
+                        <td>{{ "%.2f"|format(transaction.shares) }}</td>
+                        <td>${{ "%.2f"|format(transaction.cost_per_share) }}</td>
+                        <td>${{ "%.2f"|format(transaction.shares * transaction.cost_per_share) }}</td>
+                        <td>${{ "%.2f"|format(current_prices[symbol] - transaction.cost_per_share) }}</td>
+                        <td>${{ "%.2f"|format((current_prices[symbol] - transaction.cost_per_share) * transaction.shares) }}</td>
+                        <td>{{ "%.2f"|format((current_prices[symbol] - transaction.cost_per_share) / transaction.cost_per_share * 100) }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
