@@ -1,0 +1,7 @@
+{
+    "name": "Flask Container",
+    "dockerComposeFile": ["../../docker-compose.yml"],
+    "service": "flask-app",
+    /*"shutdownAction": "none",*/
+    "workspaceFolder": "/app"
+  }
