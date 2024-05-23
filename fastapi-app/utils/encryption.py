@@ -10,25 +10,6 @@ from utils.logger_script import logger
 
 backend = default_backend()
 
-def pad_binary_data(binary_data: bytes) -> bytes:
-    """
-    Pad the binary data with null bytes to ensure the length is a multiple of the block size.
-
-    This is necessary because the AES cipher requires the input data to be a multiple of the block size (16 bytes).
-
-    Args:
-        binary_data (bytes): The binary data to be padded.
-
-    Returns:
-        bytes: The padded binary data.
-    """
-    try:
-        block_size = 16
-        padding_length = block_size - (len(binary_data) % block_size)
-        return binary_data + b"\0" * padding_length
-    except Exception as error:
-        logger.error(f"Error padding data. Error: {error}")
-
 def decrypt(stored_encrypted_data: str) -> Union[dict, str]:
     """
     Decrypt the encrypted data using AES-CBC.

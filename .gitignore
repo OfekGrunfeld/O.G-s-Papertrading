@@ -154,3 +154,4 @@ testing/*
 */*.env
 DockerFile
 .github
+FileTree.txt
