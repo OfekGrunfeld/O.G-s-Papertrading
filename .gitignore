@@ -155,3 +155,5 @@ testing/*
 DockerFile
 .github
 FileTree.txt
+fastapi-app/emails/*
+screenshots/*

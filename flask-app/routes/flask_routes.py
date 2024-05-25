@@ -13,7 +13,7 @@ from utils.logger_script import logger
 from utils.yfinance_helper import get_current_prices_of_symbol_list, get_symbol_info
 
 from forms.userbase import SignUpForm, SignInForm, UpdateUserForm
-from forms.stocks import SymbolPickForm, TradeForm, SwitchGraphTheme, get_locked_trade_form
+from forms.stocks import SymbolPickForm, TradeForm, get_locked_trade_form
 
 from comms.communications import get_response, FastAPIRoutes
 
@@ -74,11 +74,9 @@ def stock_dashboard(symbol: str = None):
     
     try:
         symbol_form = SymbolPickForm()
-        switch_graph_theme_form = SwitchGraphTheme()
         feedback = None
         trade_feedback = None
         keep_form_data = True
-        graph_theme = ""
 
 
         # Symbol form part
@@ -99,15 +97,6 @@ def stock_dashboard(symbol: str = None):
         if info is None:
             raise InternalError("Stock does not exist")
         
-        if request.method == "POST" and switch_graph_theme_form.validate_on_submit():
-            logger.debug(f"switch form submit")
-            logger.debug(f"{switch_graph_theme_form.data}")
-            if switch_graph_theme_form.state.label.text == "OFF":
-                SwitchGraphTheme.state = SubmitField("ON")
-                graph_theme = "light"
-            elif switch_graph_theme_form.state.label.text == "ON":
-                SwitchGraphTheme.state = SubmitField("OFF")
-                graph_theme = "dark"
 
         if request.method == "POST" and trade_form.validate_on_submit():
             logger.debug(f"Trade form submitted")
@@ -150,12 +139,10 @@ def stock_dashboard(symbol: str = None):
             "stocks/stock_dashboard.html", 
             trade_form=trade_form,
             symbol_form=symbol_form,
-            switch_graph_theme_form=switch_graph_theme_form,
             symbol=symbol,
             bid=info["bid"],
             ask=info["ask"],
             trade_feedback=trade_feedback,
-            graph_theme=graph_theme
         )
     except InternalError as error:
         logger.warning(f"InternalError: {error}")
@@ -163,7 +150,6 @@ def stock_dashboard(symbol: str = None):
             "stocks/stock_dashboard.html", 
             trade_form=get_locked_trade_form(), 
             symbol_form=symbol_form,
-            switch_graph_theme_form=switch_graph_theme_form,
             symbol="Invalid Symbol",
             feedback=feedback,
             trade_feedback=trade_feedback

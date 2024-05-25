@@ -87,7 +87,7 @@ def sign_in(username: str, password: str, db: Session = Depends(get_db_userbase)
         # Create a user model (encoded)
         user_model = create_user_model(None, username, password)
 
-        saved_user_unsafe = db.query(Userbase).filter((Userbase.username == user_model.username) & (Userbase.password == user_model.password)).first()
+        saved_user_unsafe = db.query(Userbase).filter((Userbase.username == user_model.username)).first()
         if saved_user_unsafe is not None:
             saved_user = db.query(Userbase).filter((Userbase.username == user_model.username) & (Userbase.password == user_model.password)).first()
             if saved_user is not None:
