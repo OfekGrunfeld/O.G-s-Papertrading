@@ -157,3 +157,4 @@ DockerFile
 FileTree.txt
 fastapi-app/emails/*
 screenshots/*
+dev/

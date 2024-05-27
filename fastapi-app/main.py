@@ -11,7 +11,7 @@ def run_app(app: FastAPI) -> None:
     app.add_middleware(VerifyClientIPMiddleware)
     uvicorn.run(
         app,
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=int(FASTAPI_PORT),
         ssl_keyfile="./https/key.pem", 
         ssl_certfile="./https/cert.pem",
