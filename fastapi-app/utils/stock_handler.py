@@ -20,10 +20,10 @@ from data.userbase.helper import get_user_from_userbase
 
 
 class StockHandler:
-    status = ""
+    def __init__(self):
+        self.status = ""
 
-    @staticmethod
-    def deal_with_transaction(stock_record: StockRecord, uuid: str):
+    def deal_with_transaction(self, stock_record: StockRecord, uuid: str):
         """
         Processes a stock transaction for a given user identified by UUID. This involves checking the user's balance,
         updating their portfolio, and logging the transaction. The method handles both buying and selling of shares.
@@ -50,15 +50,13 @@ class StockHandler:
 
         if saved_user is None:
             logger.error(f"Could not retrieve user from userbase")
-            StockHandler.status = "Internal Server Error"
+            self.status = "Internal Server Error"
             return
 
         user_balance = saved_user.balance
 
         if stock_record.side == "buy":
-            if user_balance >= stock_record.total_cost:
-                # Remove cost of shares from user's balance
-                user_balance -= stock_record.total_cost
+            if user_balance >= stock_record.total_cost:                
                 # Update transaction to be tracked
                 stock_record.status = Statuses.tracked.value
                 # Output stock record to dict
@@ -66,7 +64,7 @@ class StockHandler:
                     stock_record_dict = stock_record.to_dict()
                 except Exception as error:
                     logger.error(f"Could not output stock record into a dictionary. Error: {error}")
-                    StockHandler.status = "Internal Server Error"
+                    self.status = "Internal Server Error"
                     return 
                 success_transactions = add_stock_data_to_selected_database_table(
                     database_name=DatabasesNames.transactions.value,
@@ -81,25 +79,30 @@ class StockHandler:
 
                 if success_transactions and success_portfolio:
                     logger.debug(f"Successfully added transaction to transaction history and active portfolio of user {uuid}")
-                    status = f"Successfully bought {stock_record.shares} shares, each for {stock_record.cost_per_share} and in total {int(stock_record.total_cost * 100) / 100}"
+                    status = f"Successfully bought {int(stock_record.shares * 100) / 100} shares, each for {stock_record.cost_per_share} and in total {int(stock_record.total_cost * 100) / 100}"
                     logger.info(f"{uuid} {status}")
-                    StockHandler.status = status
+                    self.status = status
+                    # Remove cost of shares from user's balance
+                    user_balance -= stock_record.total_cost
                 else:
                     logger.error(f"Transaction from user {uuid} was not succcessful")
-                    StockHandler.status = "Internal Server Error"
+                    self.status = "Internal Server Error"
             else:
                 # Sell the amount of stocks the user can buy
                 logger.warning(f"User {uuid} doesn't have enough money to buy {stock_record.shares} shares of {stock_record.symbol}. \
                                As they cost {stock_record.total_cost} and the user only has {user_balance}")
                 max_shares = np.double(user_balance / stock_record.cost_per_share)
+                logger.error(f"max shares: {max_shares}")
                 
-                if max_shares >= 1:
+                if max_shares > 0:
                     stock_record.shares = max_shares
                     stock_record.update_total_cost()
-                    StockHandler.deal_with_transaction(stock_record, uuid)
+                    logger.error(f"calling again")
+                    self.deal_with_transaction(stock_record, uuid)
                     return
                 else:
-                    StockHandler.status = "Internal Server Error"
+                    logger.warning(f"The user doesn't have enough money to buy any amount of shares")
+                    self.status = "Insufficient funds"
         elif stock_record.side == "sell":      
             # Get the portfolio's table object for querying
             table_object = get_table_object_from_selected_database_by_name(table_name=uuid, database_name=DatabasesNames.transactions.value)
@@ -110,11 +113,11 @@ class StockHandler:
 
             if stock_record.shares <= 0:
                 logger.warning(f"Transaction from user {uuid} attempted to sell 0 or fewer shares")
-                StockHandler.status = "Cannot buy 0 or fewer shares"
+                self.status = "Cannot buy 0 or fewer shares"
                 return
             
             # Sell the shares of the symbol form the portfolio
-            revenue, unsold_shares = StockHandler.sell_shares(uuid=uuid, symbol=stock_record.symbol, shares=stock_record.shares)
+            revenue, unsold_shares = self.sell_shares(uuid=uuid, symbol=stock_record.symbol, shares=stock_record.shares)
 
             # Add to user balance
             user_balance += revenue
@@ -135,10 +138,10 @@ class StockHandler:
             if flag:
                 status = f"Successully sold {stock_record.shares} shares for a revenue of {int(revenue * 100) / 100}. Each share for a price of {int(stock_record.cost_per_share * 100) / 100}"
                 logger.info(status)
-                StockHandler.status = status
+                self.status = status
             else:
                 logger.info(f"Failed to update transactions database with the sell transaction data")
-                StockHandler.status = "Could not sell shares. Internal Server Error"
+                self.status = "Could not sell shares. Internal Server Error"
         
 
         # Update user balance 
@@ -151,8 +154,7 @@ class StockHandler:
         session.commit() 
         session.close()
             
-    @staticmethod
-    def sell_shares(uuid: str, symbol: str, shares: np.double) -> np.double:
+    def sell_shares(self, uuid: str, symbol: str, shares: np.double) -> np.double:
         """
         Handles the selling of shares from a user's portfolio. It fetches the user's shares from the database,
         calculates the potential revenue based on current market prices, and updates the user's portfolio.

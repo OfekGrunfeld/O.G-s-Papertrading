@@ -296,8 +296,9 @@ def submit_order(uuid: str, order: str, db: Session = Depends(get_db_userbase)):
                         cost_per_share=cost_per_share,
                         notes=None
                     )
-                    StockHandler.deal_with_transaction(sr, uuid)
-                    return_dict.data = StockHandler.status
+                    handler = StockHandler()
+                    handler.deal_with_transaction(sr, uuid)
+                    return_dict.data = handler.status
                 except Exception as error:
                     logger.error(f"Error creating stock record: {error}")
             case _:

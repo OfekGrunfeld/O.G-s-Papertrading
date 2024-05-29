@@ -4,13 +4,6 @@
 
 {% block styles %}
   {{ super() }}
-  {% if session.username is not defined %}
-  <style>
-    .tv-column {
-      width: 100%;
-    }
-  </style>
-  {% endif %}
   <style>
     .hidden {
       display: none;
