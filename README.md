@@ -1,4 +1,5 @@
 # O.G's PaperTrading Platform
+Note: This project was written for submittion, and therefore it is littered with ChatGPT comments. Please ignore.
 
 Welcome to O.G's PaperTrading, a sophisticated and interactive simulation platform designed by Ofek Grunfeld. This project aims to offer traders a realistic environment to practice and refine their trading strategies without any financial risk.
 
